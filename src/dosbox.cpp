@@ -126,7 +126,6 @@ Bit32u ticksScheduled;
 bool ticksLocked;
 
 void Blood_DoInterrupt(void);
-void Blood_MakeTheCall(void);
 extern uint32_t Blood_Status;
 extern int32_t Blood_OldCycles;
 

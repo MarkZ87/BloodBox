@@ -57,13 +57,13 @@ typedef struct __attribute__((packed))
     int16_t CeilingStat, FloorStat;
     int16_t CeilingPicNum, CeilingHeiNum;
     int8_t  CeilingShade;
-    int8_t  CeilingPal;
-    int8_t  CeilingXPanning, CeilingYPanning;
+    uint8_t CeilingPal;
+    uint8_t CeilingXPanning, CeilingYPanning;
     int16_t FloorPicNum, FloorHeiNum;
     int8_t  FloorShade;
-    int8_t  FloorPal;
-    int8_t  FloorXPanning, FloorYPanning;
-    int8_t  Visibility, Filler;
+    uint8_t FloorPal;
+    uint8_t FloorXPanning, FloorYPanning;
+    uint8_t Visibility, Filler;
     int16_t LoTag, HiTag, Extra;
 }
 Blood_Sector_t;
@@ -90,9 +90,9 @@ typedef struct __attribute__((packed))
     int16_t NextSector, CStat;
     int16_t PicNum, OverPicNum;
     int8_t  Shade;
-    int8_t  Pal;
-    int8_t  XRepeat, YRepeat;
-    int8_t  XPanning, YPanning;
+    uint8_t Pal;
+    uint8_t XRepeat, YRepeat;
+    uint8_t XPanning, YPanning;
     int16_t LoTag, HiTag, Extra;
 }
 Blood_Wall_t;
@@ -119,7 +119,7 @@ typedef struct __attribute__((packed))
     int32_t X, Y, Z;
     int16_t CStat, PicNum;
     int8_t  Shade;
-    int8_t  Pal, ClipDist, Filler;
+    uint8_t Pal, ClipDist, Filler;
     uint8_t XRepeat, YRepeat;
     int8_t  XOffset, YOffset;
     int16_t SectNum, StatNum;
@@ -146,7 +146,7 @@ extern int32_t Blood_YDimen;
 extern int32_t Blood_ViewOffset;
 extern int32_t Blood_BytesPerLine;
 extern int32_t Blood_StereoMode;
-extern int8_t  Blood_VidOption;
+extern uint8_t Blood_VidOption;
 extern int32_t Blood_OStereoPixelWidth; /* = -1 */
 extern int32_t Blood_StereoPixelWidth; /* = 28 */
 extern int16_t Blood_StartUMost[Blood_MaxXDim];
@@ -183,7 +183,7 @@ extern int32_t Blood_OXYAspect; /* = -1 */
 extern int32_t Blood_OXDimen; /* = -1 */
 extern int32_t Blood_OViewingRange; /* = -1 */
 extern int32_t Blood_FrameOffset;
-extern int8_t  Blood_GotSector[(Blood_MaxSectors + 7) >> 3];
+extern uint8_t Blood_GotSector[(Blood_MaxSectors + 7) >> 3];
 extern int16_t Blood_NumSectors;
 extern int16_t Blood_UMost[Blood_MaxXDim];
 extern int16_t Blood_DMost[Blood_MaxXDim];
@@ -194,19 +194,19 @@ extern int16_t Blood_MaskWallCount;
 extern int32_t Blood_SMostWallCount; /* = -1 */
 extern int16_t Blood_SMostCount;
 extern int32_t Blood_SpriteSortCount;
-extern int8_t  Blood_GlobParaCeilClip;
-extern int8_t  Blood_GlobParaFlorClip;
+extern uint8_t Blood_GlobParaCeilClip;
+extern uint8_t Blood_GlobParaFlorClip;
 extern uint8_t Blood_TempBuf[Blood_MaxWalls];
-extern int8_t  Blood_AutoMapping;
+extern uint8_t Blood_AutoMapping;
 extern int16_t Blood_BunchFirst[Blood_MaxWallsB];
 extern int16_t Blood_P2[Blood_MaxWallsB];
-extern int8_t  Blood_Show2DWall[(Blood_MaxWalls + 7) >> 3];
+extern uint8_t Blood_Show2DWall[(Blood_MaxWalls + 7) >> 3];
 extern int16_t Blood_TheWall[Blood_MaxWallsB];
-extern int8_t  Blood_Pow2Char[8]; /* = {1, 2, 4, 8, 16, 32, 64, 128} */
+extern uint8_t Blood_Pow2Char[8]; /* = {1, 2, 4, 8, 16, 32, 64, 128} */
 extern int16_t Blood_BunchLast[Blood_MaxWallsB];
 extern int32_t Blood_Visibility;
 
-extern int8_t  Blood_Show2DSector[(Blood_MaxSectors + 7) >> 3];
+extern uint8_t Blood_Show2DSector[(Blood_MaxSectors + 7) >> 3];
 extern Blood_Sector_t Blood_Sectors[Blood_MaxSectors];
 extern Blood_Wall_t Blood_Walls[Blood_MaxWalls];
 extern Blood_Sprite_t Blood_Sprites[Blood_MaxSprites];
@@ -214,7 +214,7 @@ extern int16_t Blood_SectorBorder[256];
 extern int16_t Blood_SectorBorderCount;
 extern int16_t Blood_HeadSpriteSect[Blood_MaxSectors + 1];
 extern int16_t Blood_NextSpriteSect[Blood_MaxSprites];
-extern int8_t  Blood_ShowInvisibility;
+extern uint8_t Blood_ShowInvisibility;
 extern Blood_Sprite_t Blood_TSprites[Blood_MaxSpritesOnScreen];
 extern int32_t Blood_TSpriteSortCount;
 extern int16_t Blood_TheSector[Blood_MaxWallsB];
@@ -242,7 +242,7 @@ extern int16_t Blood_SearchStat;
 
 extern int16_t Blood_SMost[Blood_MaxYSaves];
 extern int16_t Blood_SMostStart[Blood_MaxWallsB];
-extern int8_t  Blood_SMostWallType[Blood_MaxWallsB];
+extern uint8_t Blood_SMostWallType[Blood_MaxWallsB];
 extern int32_t Blood_SMostWall[Blood_MaxWallsB];
 
 extern int16_t Blood_MaskWall[Blood_MaxWallsB];
@@ -256,7 +256,7 @@ extern int32_t Blood_GlobalYPanning;
 extern int32_t Blood_GlobalShade;
 extern int16_t Blood_GlobalPicNum;
 extern int16_t Blood_GlobalShiftVal;
-extern int8_t  Blood_PicSiz[Blood_MaxTiles];
+extern uint8_t Blood_PicSiz[Blood_MaxTiles];
 extern int32_t Blood_Pow2Long[32];
 extern int16_t Blood_TileSizeY[Blood_MaxTiles];
 extern int32_t Blood_PicAnm[Blood_MaxTiles];
@@ -264,6 +264,18 @@ extern int32_t Blood_GlobVis;
 extern int32_t Blood_GlobalPal;
 extern int32_t Blood_GlobalYScale;
 extern int32_t Blood_GlobalZD;
+
+extern uint8_t Blood_WallLock[Blood_MaxTiles];
+extern uint8_t Blood_GotPic[(Blood_MaxTiles + 7) >> 3];
+extern int16_t Blood_TileSizeX[Blood_MaxTiles];
+extern Blood_Pointer_t Blood_PalLookup[Blood_MaxPalLookups];
+/*extern uint8_t *Blood_PalLookup[Blood_MaxPalLookups];*/
+extern int32_t Blood_BufPlce[4];
+extern int32_t Blood_Vince[4];
+extern int32_t Blood_VPlce[4];
+extern int32_t Blood_YLookup[Blood_MaxXDim + 1];
+extern int32_t Blood_WallOff[Blood_MaxTiles];
+extern int32_t Blood_PalLookupOffset[4];
 
 void    Blood_SetAspect(int32_t daxrange, int32_t daaspect);
 void    Blood_SetView(int32_t X1, int32_t Y1, int32_t X2, int32_t Y2);
@@ -285,9 +297,17 @@ void    Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
                        char DaStat, int32_t BunchIndex);
 void    Blood_FlorScan(int32_t X1, int32_t X2, int32_t SectorIndex);
 void    Blood_PrepWall(int32_t Z, Blood_Wall_t *Wall);
-void    Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
-                       int32_t *SWall, int32_t *LWall);
 int32_t Blood_AnimateOffs(int16_t TileIndex, int16_t FakeVar);
 void    Blood_DrawWalls(int32_t BunchIndex);
+void    Blood_LoadTile(short TileIndex);
+int32_t Blood_GetPalLookup(int32_t DaVis, int32_t DaShade);
+void    Blood_SetupVLineAsm(int32_t eax);
+int32_t Blood_PreVLineAsm1(int32_t eax, int32_t ebx, int32_t ecx,
+                           int32_t edx, int32_t esi, int32_t edi);
+void    Blood_VLineAsm1(int32_t eax, int32_t ebx, int32_t ecx,
+                        int32_t edx, int32_t esi, int32_t edi);
+void    Blood_VLineAsm4(int32_t ecx, int32_t edi);
+void    Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
+                       int32_t *SWall, int32_t *LWall);
 
 #endif /* __BLOOD_BUILD_HPP__ */

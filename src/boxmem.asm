@@ -52,7 +52,19 @@ Blood_SearchX:
     resb 0x18af5a
 global Blood_SectorBorder
 Blood_SectorBorder:
-    resb 0x1540
+    resb 0x14c0
+global Blood_PalLookupOffset
+Blood_PalLookupOffset:
+    resb 0x10
+global Blood_Vince
+Blood_Vince:
+    resb 0x10
+global Blood_VPlce
+Blood_VPlce:
+    resb 0x10
+global Blood_BufPlce
+Blood_BufPlce:
+    resb 0x50
 global Blood_LWall
 Blood_LWall:
     resb 0x3250
@@ -151,13 +163,28 @@ Blood_PicAnm:
     resb 0x6000
 global Blood_Show2DWall
 Blood_Show2DWall:
-    resb 0x3400
+    resb 0x400
+global Blood_TileSizeX
+Blood_TileSizeX:
+    resb 0x3000
 global Blood_TileSizeY
 Blood_TileSizeY:
     resb 0x3000
 global Blood_GotSector
 Blood_GotSector:
-    resb 0xa380
+    resb 0x80
+global Blood_WallLock
+Blood_WallLock:
+    resb 0x1800
+global Blood_GotPic
+Blood_GotPic:
+    resb 0x2300
+global Blood_WallOff
+Blood_WallOff:
+    resb 0x6400
+global Blood_PalLookup
+Blood_PalLookup:
+    resb 0x400
 global Blood_SinTable
 Blood_SinTable:
     resb 0x1000
@@ -318,7 +345,10 @@ Blood_ParallaxVisibility:
     resb 0x4
 global Blood_Visibility
 Blood_Visibility:
-    resb 0x12c8
+    resb 0x4
+global Blood_YLookup
+Blood_YLookup:
+    resb 0x12c4
 global Blood_YXAspect
 Blood_YXAspect:
     resb 0xc

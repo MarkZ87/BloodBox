@@ -32,14 +32,16 @@ enum
 {
     BloodInt_Init,
     BloodInt_Return,
-    BloodInt_SetView,
+
     BloodInt_SetAspect,
+    BloodInt_SetView,
     BloodInt_DrawRooms,
     BloodInt_ScanSector,
-    BloodInt_DrawWalls,
     BloodInt_GetZsOfSlope,
     BloodInt_Inside,
     BloodInt_UpdateSector,
+    BloodInt_DrawWalls,
+    BloodInt_WallScan,
 };
 
 int32_t BloodBox_Startup(void);

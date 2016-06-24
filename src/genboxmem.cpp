@@ -176,6 +176,17 @@ int main(void)
     AddLabel("Blood_GlobalYScale", DSeg04(0x3db7c8));
     AddLabel("Blood_GlobalZD", DSeg04(0x3db7b0));
 
+    AddLabel("Blood_WallLock", DSeg04(0x3467c8));
+    AddLabel("Blood_GotPic", DSeg04(0x347fc8));
+    AddLabel("Blood_TileSizeX", DSeg04(0x340748));
+    AddLabel("Blood_PalLookup", DSeg04(0x3506c8));
+    AddLabel("Blood_BufPlce", DSeg04(0x2c8e68));
+    AddLabel("Blood_Vince", DSeg04(0x2c8e48));
+    AddLabel("Blood_VPlce", DSeg04(0x2c8e58));
+    AddLabel("Blood_YLookup", DSeg04(0x3dccfc));
+    AddLabel("Blood_WallOff", DSeg04(0x34a2c8));
+    AddLabel("Blood_PalLookupOffset", DSeg04(0x2c8e38));
+
     qsort(Labels, LabelCount, sizeof(Label_t), CompareFunc);
 
     FILE *fp = fopen("boxmem.asm", "wb");

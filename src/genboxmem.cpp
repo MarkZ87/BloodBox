@@ -167,7 +167,7 @@ int main(void)
     AddLabel("Blood_GlobalShade", DSeg04(0x3db7a0));
     AddLabel("Blood_GlobalPicNum", DSeg04(0x3df00e));
     AddLabel("Blood_GlobalShiftVal", DSeg04(0x3df010));
-    AddLabel("Blood_PicSiz", DSeg04(0x321208));
+    AddLabel("Blood_PicSize", DSeg04(0x321208));
     AddLabel("Blood_Pow2Long", DSeg04(0x13c8c0));
     AddLabel("Blood_TileSizeY", DSeg04(0x343748));
     AddLabel("Blood_PicAnm", DSeg04(0x33a348));
@@ -186,6 +186,30 @@ int main(void)
     AddLabel("Blood_YLookup", DSeg04(0x3dccfc));
     AddLabel("Blood_WallOff", DSeg04(0x34a2c8));
     AddLabel("Blood_PalLookupOffset", DSeg04(0x2c8e38));
+
+    AddLabel("Blood_FixChain1A", CSeg01(0xf0bf4 + 2));
+    AddLabel("Blood_FixChain1B", CSeg01(0xf0bff + 2));
+    AddLabel("Blood_Mach3A", CSeg01(0xf0bfc + 2));
+
+    AddLabel("Blood_GlobalPalWritten", DSeg04(0x3db81c));
+    AddLabel("Blood_GlobalBufPlc", DSeg04(0x3db7b8));
+    AddLabel("Blood_GlobalX1", DSeg04(0x3db790));
+    AddLabel("Blood_GlobalX2", DSeg04(0x3db798));
+    AddLabel("Blood_GlobalY1", DSeg04(0x3db7a4));
+    AddLabel("Blood_GlobalY2", DSeg04(0x3db7ac));
+    AddLabel("Blood_GlobalXShift", DSeg04(0x3df0a5));
+    AddLabel("Blood_GlobalYShift", DSeg04(0x3df0a6));
+    AddLabel("Blood_LastX", DSeg04(0x2c7b78));
+    AddLabel("Blood_Asm1", DSeg04(0x3db810));
+    AddLabel("Blood_Asm2", DSeg04(0x3db7bc));
+    AddLabel("Blood_HorizYCent", DSeg04(0x3db80c));
+    AddLabel("Blood_HorizLookup", DSeg04(0x3db82c));
+    AddLabel("Blood_HorizLookup2", DSeg04(0x3db854));
+    AddLabel("Blood_RadarAng", DSeg04(0x311a08));
+    AddLabel("Blood_RadarAng2", DSeg04(0x2fc988));
+    AddLabel("Blood_DistRecip", DSeg04(0x323a08));
+    AddLabel("Blood_NYTooClose", DSeg04(0x3dcc90));
+    AddLabel("Blood_NYTooFar", DSeg04(0x3dcc94));
 
     qsort(Labels, LabelCount, sizeof(Label_t), CompareFunc);
 

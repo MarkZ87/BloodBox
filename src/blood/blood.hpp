@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "cpu.h"
 #include "mem.h"
@@ -27,6 +28,7 @@
 
 #define Blood_Min(A, B) (((A) < (B)) ? (A) : (B))
 #define Blood_Max(A, B) (((A) > (B)) ? (A) : (B))
+#define Blood_KLAbs(X) (abs(X))
 
 enum
 {
@@ -34,6 +36,7 @@ enum
     BloodInt_Return,
 
     BloodInt_SetAspect,
+    BloodInt_DoSetAspect,
     BloodInt_SetView,
     BloodInt_DrawRooms,
     BloodInt_ScanSector,
@@ -42,6 +45,8 @@ enum
     BloodInt_UpdateSector,
     BloodInt_DrawWalls,
     BloodInt_WallScan,
+    BloodInt_FlorScan,
+    BloodInt_CeilScan,
 };
 
 int32_t BloodBox_Startup(void);

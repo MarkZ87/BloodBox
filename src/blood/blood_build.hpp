@@ -1,4 +1,8 @@
 
+// "Build Engine & Tools" Copyright (c) 1993-1997 Ken Silverman
+// Ken Silverman's official web site: "http://www.advsys.net/ken"
+// See the included license file "BUILDLIC.TXT" for license info.
+
 #ifndef __BLOOD_BUILD_HPP__
 #define __BLOOD_BUILD_HPP__
 
@@ -256,7 +260,7 @@ extern int32_t Blood_GlobalYPanning;
 extern int32_t Blood_GlobalShade;
 extern int16_t Blood_GlobalPicNum;
 extern int16_t Blood_GlobalShiftVal;
-extern uint8_t Blood_PicSiz[Blood_MaxTiles];
+extern uint8_t Blood_PicSize[Blood_MaxTiles];
 extern int32_t Blood_Pow2Long[32];
 extern int16_t Blood_TileSizeY[Blood_MaxTiles];
 extern int32_t Blood_PicAnm[Blood_MaxTiles];
@@ -277,37 +281,47 @@ extern int32_t Blood_YLookup[Blood_MaxXDim + 1];
 extern int32_t Blood_WallOff[Blood_MaxTiles];
 extern int32_t Blood_PalLookupOffset[4];
 
+extern uint32_t Blood_FixChain1A; /* = 0x140; */
+extern uint32_t Blood_FixChain1B; /* = 0x140; */
+extern uint8_t  Blood_Mach3A; /* = 0x20; */
+
+/* extern char *  Blood_GlobalPalWritten; */
+extern Blood_Pointer_t Blood_GlobalPalWritten;
+extern int32_t Blood_GlobalBufPlc;
+extern int32_t Blood_GlobalX1;
+extern int32_t Blood_GlobalX2;
+extern int32_t Blood_GlobalY1;
+extern int32_t Blood_GlobalY2;
+extern uint8_t Blood_GlobalXShift;
+extern uint8_t Blood_GlobalYShift;
+extern int32_t Blood_LastX[Blood_MaxYDim];
+extern int32_t Blood_Asm1;
+extern int32_t Blood_Asm2;
+extern int32_t Blood_HorizYCent;
+/*extern int32_t *Blood_HorizLookup;*/
+extern Blood_Pointer_t Blood_HorizLookup;
+/*extern int32_t *Blood_HorizLookup2;*/
+extern Blood_Pointer_t Blood_HorizLookup2;
+extern int16_t Blood_RadarAng[1280];
+extern int16_t Blood_RadarAng2[Blood_MaxXDim];
+extern uint32_t Blood_DistRecip[16384];
+extern int32_t Blood_NYTooClose;
+extern int32_t Blood_NYTooFar;
+
 void    Blood_SetAspect(int32_t daxrange, int32_t daaspect);
+void    Blood_DoSetAspect(void);
 void    Blood_SetView(int32_t X1, int32_t Y1, int32_t X2, int32_t Y2);
-int32_t Blood_BunchFront(int32_t BunchIndex1, int32_t BunchIndex2);
 void    Blood_DrawRooms(int32_t daposx, int32_t daposy, int32_t daposz,
                         int16_t daang, int32_t dahoriz, int16_t dacursectnum);
 void    Blood_ScanSector(int16_t SectorIndex);
-int32_t Blood_NSqrtAsm(int32_t eax);
 void    Blood_GetZsOfSlope(int16_t SectorIndex, int32_t DaX, int32_t DaY,
                            int32_t *CeilingZ, int32_t *FloorZ);
 int32_t Blood_Inside(int32_t X, int32_t Y, int16_t SectorIndex);
 void    Blood_UpdateSector(int32_t X, int32_t Y, int16_t *SectorIndex);
-uint8_t Blood_WallMost(int16_t *MostBuffer, int32_t W, int32_t SectorIndex,
-                       char DaStat);
-void    Blood_GrouScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
-                       char DaStat);
-void    Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex);
-void    Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
-                       char DaStat, int32_t BunchIndex);
-void    Blood_FlorScan(int32_t X1, int32_t X2, int32_t SectorIndex);
-void    Blood_PrepWall(int32_t Z, Blood_Wall_t *Wall);
-int32_t Blood_AnimateOffs(int16_t TileIndex, int16_t FakeVar);
 void    Blood_DrawWalls(int32_t BunchIndex);
-void    Blood_LoadTile(short TileIndex);
-int32_t Blood_GetPalLookup(int32_t DaVis, int32_t DaShade);
-void    Blood_SetupVLineAsm(int32_t eax);
-int32_t Blood_PreVLineAsm1(int32_t eax, int32_t ebx, int32_t ecx,
-                           int32_t edx, int32_t esi, int32_t edi);
-void    Blood_VLineAsm1(int32_t eax, int32_t ebx, int32_t ecx,
-                        int32_t edx, int32_t esi, int32_t edi);
-void    Blood_VLineAsm4(int32_t ecx, int32_t edi);
 void    Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
                        int32_t *SWall, int32_t *LWall);
+void    Blood_FlorScan(int32_t X1, int32_t X2, int32_t SectorIndex);
+void    Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex);
 
 #endif /* __BLOOD_BUILD_HPP__ */

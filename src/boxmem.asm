@@ -4,7 +4,16 @@ section .bss
 global MemArray
 MemArray:
 
-    resb 0x2328c8
+    resb 0x210c06
+global Blood_FixChain1A
+Blood_FixChain1A:
+    resb 0x8
+global Blood_Mach3A
+Blood_Mach3A:
+    resb 0x3
+global Blood_FixChain1B
+Blood_FixChain1B:
+    resb 0x21cb7
 global Blood_Screen
 Blood_Screen:
     resb 0x1b
@@ -52,7 +61,10 @@ Blood_SearchX:
     resb 0x18af5a
 global Blood_SectorBorder
 Blood_SectorBorder:
-    resb 0x14c0
+    resb 0x200
+global Blood_LastX
+Blood_LastX:
+    resb 0x12c0
 global Blood_PalLookupOffset
 Blood_PalLookupOffset:
     resb 0x10
@@ -118,7 +130,10 @@ Blood_DMost:
     resb 0x1480
 global Blood_ShLookup
 Blood_ShLookup:
-    resb 0x2e80
+    resb 0x2200
+global Blood_RadarAng2
+Blood_RadarAng2:
+    resb 0xc80
 global Blood_XB2
 Blood_XB2:
     resb 0x2000
@@ -145,16 +160,22 @@ Blood_RY2:
     resb 0x2000
 global Blood_RY1
 Blood_RY1:
-    resb 0x4e00
+    resb 0x4400
+global Blood_RadarAng
+Blood_RadarAng:
+    resb 0xa00
 global Blood_P2
 Blood_P2:
     resb 0x7080
 global Blood_TempBuf
 Blood_TempBuf:
     resb 0x7d80
-global Blood_PicSiz
-Blood_PicSiz:
-    resb 0x190c0
+global Blood_PicSize
+Blood_PicSize:
+    resb 0x2800
+global Blood_DistRecip
+Blood_DistRecip:
+    resb 0x168c0
 global Blood_Show2DSector
 Blood_Show2DSector:
     resb 0x80
@@ -214,16 +235,34 @@ Blood_TotalClockLock:
     resb 0xc
 global Blood_SearchY
 Blood_SearchY:
-    resb 0x6a8
+    resb 0x69c
+global Blood_GlobalX1
+Blood_GlobalX1:
+    resb 0x8
+global Blood_GlobalX2
+Blood_GlobalX2:
+    resb 0x4
 global Blood_GlobalOrientation
 Blood_GlobalOrientation:
     resb 0x4
 global Blood_GlobalShade
 Blood_GlobalShade:
-    resb 0x10
+    resb 0x4
+global Blood_GlobalY1
+Blood_GlobalY1:
+    resb 0x8
+global Blood_GlobalY2
+Blood_GlobalY2:
+    resb 0x4
 global Blood_GlobalZD
 Blood_GlobalZD:
-    resb 0x18
+    resb 0x8
+global Blood_GlobalBufPlc
+Blood_GlobalBufPlc:
+    resb 0x4
+global Blood_Asm2
+Blood_Asm2:
+    resb 0xc
 global Blood_GlobalYScale
 Blood_GlobalYScale:
     resb 0x4
@@ -271,13 +310,22 @@ Blood_ViewingRangeRecip:
     resb 0x4
 global Blood_GlobalPal
 Blood_GlobalPal:
-    resb 0xc
+    resb 0x4
+global Blood_HorizYCent
+Blood_HorizYCent:
+    resb 0x4
+global Blood_Asm1
+Blood_Asm1:
+    resb 0x4
 global Blood_GlobalHoriz
 Blood_GlobalHoriz:
     resb 0x4
 global Blood_GlobVis
 Blood_GlobVis:
-    resb 0x8
+    resb 0x4
+global Blood_GlobalPalWritten
+Blood_GlobalPalWritten:
+    resb 0x4
 global Blood_SinGlobalAng
 Blood_SinGlobalAng:
     resb 0x4
@@ -286,7 +334,10 @@ Blood_GlobalDClip:
     resb 0x4
 global Blood_XDimenScale
 Blood_XDimenScale:
-    resb 0x8
+    resb 0x4
+global Blood_HorizLookup
+Blood_HorizLookup:
+    resb 0x4
 global Blood_XDimenRecip
 Blood_XDimenRecip:
     resb 0x4
@@ -313,13 +364,22 @@ Blood_WY1:
     resb 0x4
 global Blood_FrameOffset
 Blood_FrameOffset:
-    resb 0x8
+    resb 0x4
+global Blood_HorizLookup2
+Blood_HorizLookup2:
+    resb 0x4
 global Blood_YDimen
 Blood_YDimen:
     resb 0x1010
 global Blood_ActivePage
 Blood_ActivePage:
-    resb 0x430
+    resb 0x428
+global Blood_NYTooClose
+Blood_NYTooClose:
+    resb 0x4
+global Blood_NYTooFar
+Blood_NYTooFar:
+    resb 0x4
 global Blood_BytesPerLine
 Blood_BytesPerLine:
     resb 0x18
@@ -416,7 +476,13 @@ Blood_SMostCount:
     resb 0xe
 global Blood_NumSectors
 Blood_NumSectors:
-    resb 0x81
+    resb 0x7f
+global Blood_GlobalXShift
+Blood_GlobalXShift:
+    resb 0x1
+global Blood_GlobalYShift
+Blood_GlobalYShift:
+    resb 0x1
 global Blood_GlobParaCeilClip
 Blood_GlobParaCeilClip:
     resb 0x1

@@ -1,4 +1,8 @@
 
+// "Build Engine & Tools" Copyright (c) 1993-1997 Ken Silverman
+// Ken Silverman's official web site: "http://www.advsys.net/ken"
+// See the included license file "BUILDLIC.TXT" for license info.
+
 #ifndef __BLOOD_PRAGMAS_HPP__
 #define __BLOOD_PRAGMAS_HPP__
 

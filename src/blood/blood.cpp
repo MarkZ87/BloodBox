@@ -170,6 +170,7 @@ static void Blood_Init(void)
     reg_ebx = 0;
 
     Blood_WriteInt(CSeg01Ptr(0x9bd17), BloodInt_SetAspect, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x9bd7c), BloodInt_DoSetAspect, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x9bb50), BloodInt_SetView, 1, 0, 0);
 
     /*
@@ -192,6 +193,8 @@ static void Blood_Init(void)
     Blood_WriteInt(CSeg01Ptr(0x99224), BloodInt_UpdateSector, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x8a357), BloodInt_DrawWalls, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x8c7de), BloodInt_WallScan, 1, 8, 0);
+    Blood_WriteInt(CSeg01Ptr(0x8c04b), BloodInt_FlorScan, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x8b8da), BloodInt_CeilScan, 1, 0, 0);
 }
 
 /* See Normal_Loop() in dosbox.cpp */
@@ -224,11 +227,14 @@ void Blood_DoInterrupt(void)
     case BloodInt_Return:
         Blood_Status = 2;
         break;
-    case BloodInt_SetView:
-        Blood_SetView(reg_eax, reg_edx, reg_ebx, reg_ecx);
-        break;
     case BloodInt_SetAspect:
         Blood_SetAspect(reg_eax, reg_edx);
+        break;
+    case BloodInt_DoSetAspect:
+        Blood_DoSetAspect();
+        break;
+    case BloodInt_SetView:
+        Blood_SetView(reg_eax, reg_edx, reg_ebx, reg_ecx);
         break;
     case BloodInt_DrawRooms:
         /*Blood_ShowInvisibility = 1;*/
@@ -258,6 +264,12 @@ void Blood_DoInterrupt(void)
                        (int16_t *)&MemBase[reg_ecx],
                        (int32_t *)&MemBase[Stack32[1]],
                        (int32_t *)&MemBase[Stack32[2]]);
+        break;
+    case BloodInt_FlorScan:
+        Blood_FlorScan(reg_eax, reg_edx, reg_ebx);
+        break;
+    case BloodInt_CeilScan:
+        Blood_CeilScan(reg_eax, reg_edx, reg_ebx);
         break;
     default:
         LOG_MSG("WARNING: Blood interrupt called with invalid eax value!\n");

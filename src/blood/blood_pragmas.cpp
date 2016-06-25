@@ -1,4 +1,8 @@
 
+// "Build Engine & Tools" Copyright (c) 1993-1997 Ken Silverman
+// Ken Silverman's official web site: "http://www.advsys.net/ken"
+// See the included license file "BUILDLIC.TXT" for license info.
+
 #include "blood.hpp"
 
 void Blood_QInterpolateDown16(intptr_t BufPtr, int32_t Count,

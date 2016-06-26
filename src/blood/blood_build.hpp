@@ -6,8 +6,6 @@
 #ifndef __BLOOD_BUILD_HPP__
 #define __BLOOD_BUILD_HPP__
 
-#include "blood.hpp"
-
 #define Blood_MaxSectors 1024
 #define Blood_MaxWalls 8192
 #define Blood_MaxSprites 4096
@@ -18,7 +16,7 @@
 #define Blood_MaxXDim 1600
 #define Blood_MaxYDim 1200
 #define Blood_MaxPalLookups 256
-#define Blood_MaxPSKyTiles 256
+#define Blood_MaxPSkyTiles 256
 #define Blood_MaxSpritesOnScreen 1024
 
 #define Blood_ClipMask0 ((1 << 16) + 1)
@@ -155,7 +153,6 @@ extern int32_t Blood_OStereoPixelWidth; /* = -1 */
 extern int32_t Blood_StereoPixelWidth; /* = 28 */
 extern int16_t Blood_StartUMost[Blood_MaxXDim];
 extern int16_t Blood_StartDMost[Blood_MaxXDim];
-
 extern int32_t Blood_BeforeDrawRooms; /* = 1 */
 extern int32_t Blood_TotalArea;
 extern int32_t Blood_GlobalPosX;
@@ -209,15 +206,12 @@ extern int16_t Blood_TheWall[Blood_MaxWallsB];
 extern uint8_t Blood_Pow2Char[8]; /* = {1, 2, 4, 8, 16, 32, 64, 128} */
 extern int16_t Blood_BunchLast[Blood_MaxWallsB];
 extern int32_t Blood_Visibility;
-
 extern uint8_t Blood_Show2DSector[(Blood_MaxSectors + 7) >> 3];
 extern Blood_Sector_t Blood_Sectors[Blood_MaxSectors];
 extern Blood_Wall_t Blood_Walls[Blood_MaxWalls];
 extern Blood_Sprite_t Blood_Sprites[Blood_MaxSprites];
 extern int16_t Blood_SectorBorder[256];
 extern int16_t Blood_SectorBorderCount;
-extern int16_t Blood_HeadSpriteSect[Blood_MaxSectors + 1];
-extern int16_t Blood_NextSpriteSect[Blood_MaxSprites];
 extern uint8_t Blood_ShowInvisibility;
 extern Blood_Sprite_t Blood_TSprites[Blood_MaxSpritesOnScreen];
 extern int32_t Blood_TSpriteSortCount;
@@ -230,25 +224,20 @@ extern int32_t Blood_RX1[Blood_MaxWallsB];
 extern int32_t Blood_RX2[Blood_MaxWallsB];
 extern int32_t Blood_RY1[Blood_MaxWallsB];
 extern int32_t Blood_RY2[Blood_MaxWallsB];
-
 extern int16_t Blood_UPlc[Blood_MaxXDim];
 extern int16_t Blood_DPlc[Blood_MaxXDim];
-
 extern uint16_t Blood_SqrtTable[4096];
 extern uint16_t Blood_ShLookup[4096 + 256];
-
 extern int16_t Blood_SearchIt;
 extern int32_t Blood_SearchX; /* = -1 */
 extern int32_t Blood_SearchY;
 extern int16_t Blood_SearchSector;
 extern int16_t Blood_SearchWall;
 extern int16_t Blood_SearchStat;
-
 extern int16_t Blood_SMost[Blood_MaxYSaves];
 extern int16_t Blood_SMostStart[Blood_MaxWallsB];
 extern uint8_t Blood_SMostWallType[Blood_MaxWallsB];
 extern int32_t Blood_SMostWall[Blood_MaxWallsB];
-
 extern int16_t Blood_MaskWall[Blood_MaxWallsB];
 extern int16_t Blood_UWall[Blood_MaxXDim];
 extern int16_t Blood_DWall[Blood_MaxXDim];
@@ -268,7 +257,6 @@ extern int32_t Blood_GlobVis;
 extern int32_t Blood_GlobalPal;
 extern int32_t Blood_GlobalYScale;
 extern int32_t Blood_GlobalZD;
-
 extern uint8_t Blood_WallLock[Blood_MaxTiles];
 extern uint8_t Blood_GotPic[(Blood_MaxTiles + 7) >> 3];
 extern int16_t Blood_TileSizeX[Blood_MaxTiles];
@@ -280,11 +268,9 @@ extern int32_t Blood_VPlce[4];
 extern int32_t Blood_YLookup[Blood_MaxXDim + 1];
 extern int32_t Blood_WallOff[Blood_MaxTiles];
 extern int32_t Blood_PalLookupOffset[4];
-
 extern uint32_t Blood_FixChain1A; /* = 0x140; */
 extern uint32_t Blood_FixChain1B; /* = 0x140; */
 extern uint8_t  Blood_Mach3A; /* = 0x20; */
-
 /* extern char *  Blood_GlobalPalWritten; */
 extern Blood_Pointer_t Blood_GlobalPalWritten;
 extern int32_t Blood_GlobalBufPlc;
@@ -307,6 +293,21 @@ extern int16_t Blood_RadarAng2[Blood_MaxXDim];
 extern uint32_t Blood_DistRecip[16384];
 extern int32_t Blood_NYTooClose;
 extern int32_t Blood_NYTooFar;
+extern int16_t Blood_HeadSpriteSect[Blood_MaxSectors + 1];
+extern int16_t Blood_PrevSpriteSect[Blood_MaxSprites];
+extern int16_t Blood_NextSpriteSect[Blood_MaxSprites];
+extern int16_t Blood_HeadSpriteStat[Blood_MaxStatus + 1];
+extern int16_t Blood_PrevSpriteStat[Blood_MaxSprites];
+extern int16_t Blood_NextSpriteStat[Blood_MaxSprites];
+
+extern uint8_t Blood_ParallaxType;
+extern int32_t Blood_ParallaxYOffset;
+extern int32_t Blood_ParallaxYScale;
+extern int16_t Blood_PSkyOffset[Blood_MaxPSkyTiles];
+extern int16_t Blood_PSkyBits;
+extern int32_t Blood_LPlc[Blood_MaxXDim];
+extern int32_t Blood_SWPlc[Blood_MaxXDim];
+
 
 void    Blood_SetAspect(int32_t daxrange, int32_t daaspect);
 void    Blood_DoSetAspect(void);
@@ -323,5 +324,7 @@ void    Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
                        int32_t *SWall, int32_t *LWall);
 void    Blood_FlorScan(int32_t X1, int32_t X2, int32_t SectorIndex);
 void    Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex);
+void    Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
+                       uint8_t DaStat, int32_t BunchIndex);
 
 #endif /* __BLOOD_BUILD_HPP__ */

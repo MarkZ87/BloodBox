@@ -6,37 +6,6 @@
 #include <math.h>
 #include "blood.hpp"
 
-enum
-{
-    Blood_ProcAddress_SetAspect           = IDA2LinearCSeg01(0x9bd17),
-    Blood_ProcAddress_DoSetAspect         = IDA2LinearCSeg01(0x9bd7c),
-    Blood_ProcAddress_Inside              = IDA2LinearCSeg01(0x900b4),
-    Blood_ProcAddress_UpdateSector        = IDA2LinearCSeg01(0x99224),
-    Blood_ProcAddress_GetZsOfSlope        = IDA2LinearCSeg01(0xa1d0a),
-    Blood_ProcAddress_ScanSector          = IDA2LinearCSeg01(0x898e7),
-    Blood_ProcAddress_BunchFront          = IDA2LinearCSeg01(0x8a2bd),
-    Blood_ProcAddress_DrawWalls           = IDA2LinearCSeg01(0x8a357),
-    Blood_ProcAddress_WallMost            = IDA2LinearCSeg01(0xa2482),
-    Blood_ProcAddress_GrouScan            = IDA2LinearCSeg01(0xa2df9),
-    Blood_ProcAddress_CeilScan            = IDA2LinearCSeg01(0x8b8da),
-    Blood_ProcAddress_ParaScan            = IDA2LinearCSeg01(0xa3a83),
-    Blood_ProcAddress_FlorScan            = IDA2LinearCSeg01(0x8c04b),
-    Blood_ProcAddress_PrepWall            = IDA2LinearCSeg01(0x8b564),
-    Blood_ProcAddress_WallScan            = IDA2LinearCSeg01(0x8c7de),
-    Blood_ProcAddress_AnimateOffs         = IDA2LinearCSeg01(0x41750),
-    Blood_ProcAddress_FakeTimerHandler    = IDA2LinearCSeg01(0x7bffc),
-    Blood_ProcAddress_LoadTile            = IDA2LinearCSeg01(0x4168c),
-    Blood_ProcAddress_GetPalLookup        = IDA2LinearCSeg01(0x4185c),
-    Blood_ProcAddress_SetupVLineAsm       = IDA2LinearCSeg01(0xf0b40),
-    Blood_ProcAddress_PreVLineAsm1        = IDA2LinearCSeg01(0xf0bd0),
-    Blood_ProcAddress_VLineAsm1           = IDA2LinearCSeg01(0xf0bf0),
-    Blood_ProcAddress_VLineAsm4           = IDA2LinearCSeg01(0xf0dc0),
-    Blood_ProcAddress_SetPalLookupAddress = IDA2LinearCSeg01(0xf08e0),
-    Blood_ProcAddress_SetHLineSizes       = IDA2LinearCSeg01(0xf07e0),
-    Blood_ProcAddress_HLine               = IDA2LinearCSeg01(0x8e7d0),
-    Blood_ProcAddress_HLineAsm4           = IDA2LinearCSeg01(0xf0950),
-};
-
 static int32_t Blood_NSqrtAsm(int32_t eax)
 {
     int16_t cx;
@@ -161,24 +130,6 @@ static void Blood_GrouScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
 }
 
 #if 0
-static void Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex)
-{
-    int32_t Temp[3];
-    Temp[0] = reg_eax;
-    Temp[1] = reg_edx;
-    Temp[2] = reg_ebx;
-
-    reg_eax = X1;
-    reg_edx = X2;
-    reg_ebx = SectorIndex;
-    Blood_Call(Blood_ProcAddress_CeilScan);
-
-    reg_eax = Temp[0];
-    reg_edx = Temp[1];
-    reg_ebx = Temp[2];
-}
-#endif
-
 static void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
                            char DaStat, int32_t BunchIndex)
 {
@@ -196,6 +147,7 @@ static void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
     reg_eax = Temp[0]; reg_edx = Temp[1];
     reg_ebx = Temp[2]; reg_ecx = Temp[3];
 }
+#endif
 
 static void Blood_PrepWall(int32_t Z, Blood_Wall_t *Wall)
 {
@@ -1452,11 +1404,16 @@ void Blood_DrawWalls(int32_t BunchIndex)
     }
 }
 
-int32_t Blood_VLineAsm1(int32_t VInc, int32_t PalOffs, int32_t Count,
-                        uint32_t VPlc, int32_t BufPlc, int32_t P)
-{
-    P -= Blood_FixChain1A;
+int32_t Blood_VLine1_LogY;
 
+static void Blood_SetupVLineAsm(int32_t NegLogY)
+{
+    Blood_VLine1_LogY = NegLogY;
+}
+
+static int32_t Blood_VLineAsm1(int32_t VInc, int32_t PalOffs, int32_t Count,
+                               uint32_t VPlc, int32_t BufPlc, int32_t P)
+{
     uint8_t *Mem = (uint8_t *)MemBase;
 
     uint8_t *gbuf = Mem + BufPlc;
@@ -1464,21 +1421,15 @@ int32_t Blood_VLineAsm1(int32_t VInc, int32_t PalOffs, int32_t Count,
 
     for (; Count >= 0; Count--)
     {
-        uint8_t bl = gpal[gbuf[(VPlc >> Blood_Mach3A)]];
-
-        P += Blood_FixChain1B;
-        VPlc += VInc;
+        uint8_t bl = gpal[gbuf[(VPlc >> Blood_VLine1_LogY)]];
 
         mem_writeb(P, bl);
+
+        P += Blood_BytesPerLine;
+        VPlc += VInc;
     }
 
     return VPlc;
-}
-
-void Blood_SetupVLineAsm(int32_t eax)
-{
-    reg_eax = eax;
-    Blood_Call(Blood_ProcAddress_SetupVLineAsm);
 }
 
 void Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
@@ -2024,4 +1975,197 @@ void Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex)
         Blood_HLine(X2, ++Y1);
 
     Blood_FakeTimerHandler();
+}
+
+void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
+                    uint8_t DaStat, int32_t BunchIndex)
+{
+    SectorIndex = Blood_TheSector[Blood_BunchFirst[BunchIndex]];
+    Blood_Sector_t *Sector = &Blood_Sectors[SectorIndex];
+
+    int32_t GlobalHorizBak = Blood_GlobalHoriz;
+
+    if (Blood_ParallaxYScale != 65536)
+    {
+        Blood_GlobalHoriz =
+            Blood_MulScale16(Blood_GlobalHoriz - (Blood_YDimen >> 1),
+                             Blood_ParallaxYScale) + (Blood_YDimen >> 1);
+    }
+
+    Blood_GlobVis = Blood_GlobalPisibility;
+
+    if (Sector->Visibility != 0)
+    {
+        Blood_GlobVis =
+            Blood_MulScale4(Blood_GlobVis,
+                            (int32_t)((uint8_t)(Sector->Visibility + 16)));
+    }
+
+    int16_t *TopPtr, *BotPtr;
+
+    if (DaStat == 0)
+    {
+        Blood_GlobalPal = Sector->CeilingPal;
+        Blood_GlobalPicNum = Sector->CeilingPicNum;
+        Blood_GlobalShade = Sector->CeilingShade;
+        Blood_GlobalXPanning = Sector->CeilingXPanning;
+        Blood_GlobalYPanning = Sector->CeilingYPanning;
+        TopPtr = Blood_UMost;
+        BotPtr = Blood_UPlc;
+    }
+    else
+    {
+        Blood_GlobalPal = Sector->FloorPal;
+        Blood_GlobalPicNum = Sector->FloorPicNum;
+        Blood_GlobalShade = Sector->FloorShade;
+        Blood_GlobalXPanning = Sector->FloorXPanning;
+        Blood_GlobalYPanning = Sector->FloorYPanning;
+        TopPtr = Blood_DPlc;
+        BotPtr = Blood_DMost;
+    }
+
+    if ((uint32_t)Blood_GlobalPicNum >= (uint32_t)Blood_MaxTiles)
+        Blood_GlobalPicNum = 0;
+
+    if (Blood_PicAnm[Blood_GlobalPicNum] & 192)
+        Blood_GlobalPicNum += Blood_AnimateOffs(Blood_GlobalPicNum, SectorIndex);
+
+    Blood_GlobalShiftVal = (Blood_PicSize[Blood_GlobalPicNum] >> 4);
+
+    if (Blood_Pow2Long[Blood_GlobalShiftVal] !=
+        Blood_TileSizeY[Blood_GlobalPicNum])
+    {
+        Blood_GlobalShiftVal++;
+    }
+
+    Blood_GlobalShiftVal = 32 - Blood_GlobalShiftVal;
+    Blood_GlobalZD = (((Blood_TileSizeY[Blood_GlobalPicNum] >> 1) + 
+                        Blood_ParallaxYOffset) << Blood_GlobalShiftVal) +
+                     (Blood_GlobalYPanning << 24);
+
+    Blood_GlobalYScale = (8 << (Blood_GlobalShiftVal - 19));
+
+    int32_t K = 11 - (Blood_PicSize[Blood_GlobalPicNum] & 15) - Blood_PSkyBits;
+    int32_t X = -1;
+
+    for (int32_t Z = Blood_BunchFirst[BunchIndex]; Z >= 0; Z = Blood_P2[Z])
+    {
+        int32_t WallIndex = Blood_TheWall[Z];
+        int32_t NextSectorIndex = Blood_Walls[WallIndex].NextSector;
+
+        int32_t J;
+        if (DaStat == 0)
+            J = Blood_Sectors[NextSectorIndex].CeilingStat;
+        else
+            J = Blood_Sectors[NextSectorIndex].FloorStat;
+
+        if ((NextSectorIndex < 0) || (Blood_Walls[WallIndex].CStat & 32) ||
+            ((J & 1) == 0))
+        {
+            if (X == -1)
+                X = Blood_XB1[Z];
+
+            if (Blood_ParallaxType == 0)
+            {
+                int32_t N = Blood_MulScale16(Blood_XDimenRecip, Blood_ViewingRange);
+
+                for(J = Blood_XB1[Z]; J <= Blood_XB2[Z]; J++)
+                {
+                    Blood_LPlc[J] = (((Blood_MulScale32(J - Blood_HalfXDimen, N) +
+                                    Blood_GlobalAng) & 2047) >> K);
+                }
+            }
+            else
+            {
+                for (J = Blood_XB1[Z]; J <= Blood_XB2[Z]; J++)
+                {
+                    Blood_LPlc[J] = ((((int32_t)Blood_RadarAng2[J] +
+                                      Blood_GlobalAng) & 2047) >> K);
+                }
+            }
+
+            if (Blood_ParallaxType == 2)
+            {
+                int32_t N = Blood_MulScale16(Blood_XDimScale, Blood_ViewingRange);
+
+                for (J = Blood_XB1[Z]; J <= Blood_XB2[Z]; J++)
+                {
+                    Blood_SWPlc[J] = Blood_MulScale14(
+                        Blood_SinTable[((int32_t)Blood_RadarAng2[J] + 512) & 2047], N);
+                }
+            }
+            else
+            {
+                Blood_ClearBuffer(&Blood_SWPlc[Blood_XB1[Z]],
+                                  Blood_XB2[Z] - Blood_XB1[Z] + 1,
+                                  Blood_MulScale16(Blood_XDimScale, Blood_ViewingRange));
+            }
+        }
+        else if (X >= 0)
+        {
+            int32_t L = Blood_GlobalPicNum;
+            int32_t M = (Blood_PicSize[Blood_GlobalPicNum] & 15);
+
+            Blood_GlobalPicNum = L + Blood_PSkyOffset[Blood_LPlc[X] >> M];
+
+            if (((Blood_LPlc[X] ^ Blood_LPlc[Blood_XB1[Z] - 1]) >> M) == 0)
+            {
+                Blood_WallScan(X, Blood_XB1[Z] - 1, TopPtr, BotPtr, Blood_SWPlc, Blood_LPlc);
+            }
+            else
+            {
+                J = X;
+                while (X < Blood_XB1[Z])
+                {
+                    int32_t N = L + Blood_PSkyOffset[Blood_LPlc[X] >> M];
+                    if (N != Blood_GlobalPicNum)
+                    {
+                        Blood_WallScan(J, X - 1, TopPtr, BotPtr, Blood_SWPlc, Blood_LPlc);
+                        J = X;
+                        Blood_GlobalPicNum = N;
+                    }
+                    X++;
+                }
+
+                if (J < X)
+                    Blood_WallScan(J, X - 1, TopPtr, BotPtr, Blood_SWPlc, Blood_LPlc);
+            }
+
+            Blood_GlobalPicNum = L;
+            X = -1;
+        }
+    }
+
+    if (X >= 0)
+    {
+        int32_t L = Blood_GlobalPicNum;
+        int32_t M = (Blood_PicSize[Blood_GlobalPicNum] & 15);
+        Blood_GlobalPicNum = L + Blood_PSkyOffset[Blood_LPlc[X] >> M];
+
+        if (((Blood_LPlc[X] ^ Blood_LPlc[Blood_XB2[Blood_BunchLast[BunchIndex]]]) >> M) == 0)
+        {
+            Blood_WallScan(X, Blood_XB2[Blood_BunchLast[BunchIndex]], TopPtr, BotPtr,
+                           Blood_SWPlc, Blood_LPlc);
+        }
+        else
+        {
+            int32_t J = X;
+            while (X <= Blood_XB2[Blood_BunchLast[BunchIndex]])
+            {
+                int32_t N = L + Blood_PSkyOffset[Blood_LPlc[X] >> M];
+                if (N != Blood_GlobalPicNum)
+                {
+                    Blood_WallScan(J, X - 1, TopPtr, BotPtr, Blood_SWPlc, Blood_LPlc);
+                    J = X;
+                    Blood_GlobalPicNum = N;
+                }
+                X++;
+            }
+            if (J <= X)
+                Blood_WallScan(J, X, TopPtr, BotPtr, Blood_SWPlc, Blood_LPlc);
+        }
+        Blood_GlobalPicNum = L;
+    }
+
+    Blood_GlobalHoriz = GlobalHorizBak;
 }

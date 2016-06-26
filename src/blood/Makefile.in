@@ -68,7 +68,7 @@ ARFLAGS = cru
 libblood_a_AR = $(AR) $(ARFLAGS)
 libblood_a_LIBADD =
 am_libblood_a_OBJECTS = blood.$(OBJEXT) blood_build.$(OBJEXT) \
-	blood_pragmas.$(OBJEXT)
+	blood_db.$(OBJEXT) blood_pragmas.$(OBJEXT)
 libblood_a_OBJECTS = $(am_libblood_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -196,7 +196,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir)/include
 noinst_LIBRARIES = libblood.a
-libblood_a_SOURCES = blood.cpp blood_build.cpp blood_pragmas.cpp
+libblood_a_SOURCES = blood.cpp blood_build.cpp blood_db.cpp blood_pragmas.cpp
 all: all-am
 
 .SUFFIXES:
@@ -247,6 +247,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blood.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blood_build.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blood_db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blood_pragmas.Po@am__quote@
 
 .cpp.o:

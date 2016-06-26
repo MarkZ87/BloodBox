@@ -58,7 +58,19 @@ Blood_XDimen:
     resb 0xda
 global Blood_SearchX
 Blood_SearchX:
-    resb 0x18af5a
+    resb 0x5e4a6
+global Blood_BD_19AEC4
+Blood_BD_19AEC4:
+    resb 0x4000
+global Blood_BD_19EEC4
+Blood_BD_19EEC4:
+    resb 0x4000
+global Blood_BD_1A2EC4
+Blood_BD_1A2EC4:
+    resb 0x4000
+global Blood_DB_StatCount
+Blood_DB_StatCount:
+    resb 0x120ab4
 global Blood_SectorBorder
 Blood_SectorBorder:
     resb 0x200
@@ -79,7 +91,10 @@ Blood_BufPlce:
     resb 0x50
 global Blood_LWall
 Blood_LWall:
-    resb 0x3250
+    resb 0x1930
+global Blood_LPlc
+Blood_LPlc:
+    resb 0x1920
 global Blood_SWall
 Blood_SWall:
     resb 0x1980
@@ -109,7 +124,10 @@ Blood_SMostWall:
     resb 0x2000
 global Blood_BunchFirst
 Blood_BunchFirst:
-    resb 0x2900
+    resb 0x1000
+global Blood_SWPlc
+Blood_SWPlc:
+    resb 0x1900
 global Blood_DWall
 Blood_DWall:
     resb 0xc80
@@ -199,10 +217,16 @@ Blood_WallLock:
     resb 0x1800
 global Blood_GotPic
 Blood_GotPic:
-    resb 0x2300
+    resb 0x300
+global Blood_NextSpriteStat
+Blood_NextSpriteStat:
+    resb 0x2000
 global Blood_WallOff
 Blood_WallOff:
-    resb 0x6400
+    resb 0x6200
+global Blood_PSkyOffset
+Blood_PSkyOffset:
+    resb 0x200
 global Blood_PalLookup
 Blood_PalLookup:
     resb 0x400
@@ -211,13 +235,19 @@ Blood_SinTable:
     resb 0x1000
 global Blood_StartUMost
 Blood_StartUMost:
-    resb 0x2c80
+    resb 0xc80
+global Blood_PrevSpriteSect
+Blood_PrevSpriteSect:
+    resb 0x2000
 global Blood_StartDMost
 Blood_StartDMost:
     resb 0xc80
 global Blood_NextSpriteSect
 Blood_NextSpriteSect:
-    resb 0x4300
+    resb 0x2000
+global Blood_PrevSpriteStat
+Blood_PrevSpriteStat:
+    resb 0x2300
 global Blood_Sprites
 Blood_Sprites:
     resb 0x2c200
@@ -385,7 +415,13 @@ Blood_BytesPerLine:
     resb 0x18
 global Blood_FramePlace
 Blood_FramePlace:
-    resb 0x30
+    resb 0x28
+global Blood_ParallaxYOffset
+Blood_ParallaxYOffset:
+    resb 0x4
+global Blood_ParallaxYScale
+Blood_ParallaxYScale:
+    resb 0x4
 global Blood_WindowY2
 Blood_WindowY2:
     resb 0x4
@@ -428,7 +464,10 @@ Blood_YDim:
     resb 0x4
 global Blood_XDim
 Blood_XDim:
-    resb 0x80c
+    resb 0xa
+global Blood_HeadSpriteStat
+Blood_HeadSpriteStat:
+    resb 0x802
 global Blood_HeadSpriteSect
 Blood_HeadSpriteSect:
     resb 0x804
@@ -473,7 +512,10 @@ Blood_MaskWallCount:
     resb 0x2
 global Blood_SMostCount
 Blood_SMostCount:
-    resb 0xe
+    resb 0x8
+global Blood_PSkyBits
+Blood_PSkyBits:
+    resb 0x6
 global Blood_NumSectors
 Blood_NumSectors:
     resb 0x7f
@@ -491,7 +533,10 @@ Blood_GlobParaFlorClip:
     resb 0x9
 global Blood_AutoMapping
 Blood_AutoMapping:
-    resb 0x2
+    resb 0x1
+global Blood_ParallaxType
+Blood_ParallaxType:
+    resb 0x1
 global Blood_ShowInvisibility
 Blood_ShowInvisibility:
     resb 0x1

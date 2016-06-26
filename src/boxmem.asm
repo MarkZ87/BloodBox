@@ -58,7 +58,10 @@ Blood_XDimen:
     resb 0xda
 global Blood_SearchX
 Blood_SearchX:
-    resb 0x5e4a6
+    resb 0x36416
+global Blood_DB_XSprites
+Blood_DB_XSprites:
+    resb 0x28090
 global Blood_BD_19AEC4
 Blood_BD_19AEC4:
     resb 0x4000
@@ -80,11 +83,11 @@ Blood_LastX:
 global Blood_PalLookupOffset
 Blood_PalLookupOffset:
     resb 0x10
-global Blood_Vince
-Blood_Vince:
+global Blood_VIncE
+Blood_VIncE:
     resb 0x10
-global Blood_VPlce
-Blood_VPlce:
+global Blood_VPlcE
+Blood_VPlcE:
     resb 0x10
 global Blood_BufPlce
 Blood_BufPlce:
@@ -187,7 +190,10 @@ Blood_P2:
     resb 0x7080
 global Blood_TempBuf
 Blood_TempBuf:
-    resb 0x7d80
+    resb 0x2000
+global Blood_SlopePalLookup
+Blood_SlopePalLookup:
+    resb 0x5d80
 global Blood_PicSize
 Blood_PicSize:
     resb 0x2800
@@ -265,10 +271,22 @@ Blood_TotalClockLock:
     resb 0xc
 global Blood_SearchY
 Blood_SearchY:
-    resb 0x69c
+    resb 0x488
+global Blood_GlobalZ
+Blood_GlobalZ:
+    resb 0x8
+global Blood_GlobalX
+Blood_GlobalX:
+    resb 0x4
+global Blood_GlobalY
+Blood_GlobalY:
+    resb 0x208
 global Blood_GlobalX1
 Blood_GlobalX1:
-    resb 0x8
+    resb 0x4
+global Blood_GlobalX3
+Blood_GlobalX3:
+    resb 0x4
 global Blood_GlobalX2
 Blood_GlobalX2:
     resb 0x4
@@ -280,19 +298,28 @@ Blood_GlobalShade:
     resb 0x4
 global Blood_GlobalY1
 Blood_GlobalY1:
-    resb 0x8
+    resb 0x4
+global Blood_GlobalY3
+Blood_GlobalY3:
+    resb 0x4
 global Blood_GlobalY2
 Blood_GlobalY2:
     resb 0x4
 global Blood_GlobalZD
 Blood_GlobalZD:
-    resb 0x8
+    resb 0x4
+global Blood_GlobalZX
+Blood_GlobalZX:
+    resb 0x4
 global Blood_GlobalBufPlc
 Blood_GlobalBufPlc:
     resb 0x4
 global Blood_Asm2
 Blood_Asm2:
-    resb 0xc
+    resb 0x4
+global Blood_Asm3
+Blood_Asm3:
+    resb 0x8
 global Blood_GlobalYScale
 Blood_GlobalYScale:
     resb 0x4

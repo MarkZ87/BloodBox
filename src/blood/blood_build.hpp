@@ -263,8 +263,8 @@ extern int16_t Blood_TileSizeX[Blood_MaxTiles];
 extern Blood_Pointer_t Blood_PalLookup[Blood_MaxPalLookups];
 /*extern uint8_t *Blood_PalLookup[Blood_MaxPalLookups];*/
 extern int32_t Blood_BufPlce[4];
-extern int32_t Blood_Vince[4];
-extern int32_t Blood_VPlce[4];
+extern int32_t Blood_VIncE[4];
+extern int32_t Blood_VPlcE[4];
 extern int32_t Blood_YLookup[Blood_MaxXDim + 1];
 extern int32_t Blood_WallOff[Blood_MaxTiles];
 extern int32_t Blood_PalLookupOffset[4];
@@ -299,7 +299,6 @@ extern int16_t Blood_NextSpriteSect[Blood_MaxSprites];
 extern int16_t Blood_HeadSpriteStat[Blood_MaxStatus + 1];
 extern int16_t Blood_PrevSpriteStat[Blood_MaxSprites];
 extern int16_t Blood_NextSpriteStat[Blood_MaxSprites];
-
 extern uint8_t Blood_ParallaxType;
 extern int32_t Blood_ParallaxYOffset;
 extern int32_t Blood_ParallaxYScale;
@@ -308,6 +307,14 @@ extern int16_t Blood_PSkyBits;
 extern int32_t Blood_LPlc[Blood_MaxXDim];
 extern int32_t Blood_SWPlc[Blood_MaxXDim];
 
+extern int32_t Blood_Asm3;
+extern int32_t Blood_GlobalX;
+extern int32_t Blood_GlobalY;
+extern int32_t Blood_GlobalZ;
+extern int32_t Blood_GlobalX3;
+extern int32_t Blood_GlobalY3;
+extern int32_t Blood_GlobalZX;
+extern int32_t Blood_SlopePalLookup[2048];
 
 void    Blood_SetAspect(int32_t daxrange, int32_t daaspect);
 void    Blood_DoSetAspect(void);
@@ -326,5 +333,7 @@ void    Blood_FlorScan(int32_t X1, int32_t X2, int32_t SectorIndex);
 void    Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex);
 void    Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
                        uint8_t DaStat, int32_t BunchIndex);
+void    Blood_GrouScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
+                       uint8_t DaStat);
 
 #endif /* __BLOOD_BUILD_HPP__ */

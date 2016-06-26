@@ -2,8 +2,6 @@
 #include <memory.h>
 #include "blood.hpp"
 
-// (eax - SpriteIndex, edx - SectorIndex)
-
 void Blood_DB_InsertSpriteSect(int16_t SpriteIndex, int16_t SectorIndex)
 {
     if (SpriteIndex < 0 || SpriteIndex >= 4096)
@@ -202,4 +200,36 @@ int16_t Blood_DB_SpawnSprite(int16_t SectorIndex, int16_t Stat)
     Blood_BD_19AEC4[SpriteIndex] = 0;
 
     return SpriteIndex;
+}
+
+void Blood_DB_DespawnSprite(int16_t SpriteIndex)
+{
+    int16_t Extra = Blood_Sprites[SpriteIndex].Extra;
+
+    if (Extra > 0)
+    {
+        reg_eax = Extra;
+        Blood_Call(IDA2LinearCSeg01(0x1f990));
+    }
+
+    int16_t Stat = Blood_Sprites[SpriteIndex].StatNum;
+
+    if (Stat < 0 || Stat >= Blood_MaxStatus)
+    {
+        /* "src\\db.cpp", "sprite[nSprite].statnum >= 0 && sprite[nSprite].statnum < kMaxStatus" */
+        Blood_ExitError(667, 0x121b99, 0x121ba4);
+    }
+
+    Blood_DB_DeleteSpriteStat(SpriteIndex);
+
+    int16_t SectorIndex = Blood_Sprites[SpriteIndex].SectNum;
+
+    if (SectorIndex < 0 || SectorIndex >= Blood_MaxSectors)
+    {
+        /* "src\\db.cpp", "sprite[nSprite].sectnum >= 0 && sprite[nSprite].sectnum < kMaxSectors" */
+        Blood_ExitError(670, 0x121be9, 0x121bf4);
+    }
+
+    Blood_DB_DeleteSpriteSect(SpriteIndex);
+    Blood_DB_InsertSpriteStat(SpriteIndex, 1024);
 }

@@ -196,6 +196,8 @@ static void Blood_Init(void)
     Blood_WriteInt(CSeg01Ptr(0x8c7de), BloodInt_WallScan, 1, 8, 0);
     Blood_WriteInt(CSeg01Ptr(0x8c04b), BloodInt_FlorScan, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x8b8da), BloodInt_CeilScan, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0xa3a83), BloodInt_ParaScan, 1, 4, 0);
+    Blood_WriteInt(CSeg01Ptr(0xa2df9), BloodInt_GrouScan, 1, 0, 0);
 
     /* blood_db.hpp */
     Blood_WriteInt(CSeg01Ptr(0x1f174), BloodInt_DB_InsertSpriteSect, 1, 0, 0);
@@ -204,6 +206,7 @@ static void Blood_Init(void)
     Blood_WriteInt(CSeg01Ptr(0x1f40c), BloodInt_DB_DeleteSpriteStat, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x1f50c), BloodInt_DB_InitSprites, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x1f5a4), BloodInt_DB_SpawnSprite, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1f65c), BloodInt_DB_DespawnSprite, 1, 0, 0);
 }
 
 /* See Normal_Loop() in dosbox.cpp */
@@ -237,8 +240,7 @@ void Blood_DoInterrupt(void)
         Blood_Status = 2;
         break;
 
-    /* blood_build.hpp*/
-
+    /* blood_build.hpp */
     case BloodInt_SetAspect:
         Blood_SetAspect(reg_eax, reg_edx);
         break;
@@ -283,6 +285,13 @@ void Blood_DoInterrupt(void)
     case BloodInt_CeilScan:
         Blood_CeilScan(reg_eax, reg_edx, reg_ebx);
         break;
+    case BloodInt_ParaScan:
+        Blood_ParaScan(reg_eax, reg_edx, reg_ebx, reg_ecx,
+                       Stack32[1]);
+        break;
+    case BloodInt_GrouScan:
+        Blood_GrouScan(reg_eax, reg_edx, reg_ebx, reg_ecx);
+        break;
 
     /* blood_db.hpp */
     case BloodInt_DB_InsertSpriteSect:
@@ -303,7 +312,9 @@ void Blood_DoInterrupt(void)
     case BloodInt_DB_SpawnSprite:
         reg_eax = Blood_DB_SpawnSprite(reg_eax, reg_edx);
         break;
-
+    case BloodInt_DB_DespawnSprite:
+        Blood_DB_DespawnSprite(reg_eax);
+        break;
     default:
         LOG_MSG("WARNING: Blood interrupt called with invalid eax value!\n");
         break;

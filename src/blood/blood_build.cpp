@@ -47,6 +47,13 @@ static int32_t Blood_MSqrtAsm(int32_t ecx)
     return eax;
 }
 
+static int32_t Blood_KRecip(int32_t X)
+{
+    if (X == 0)
+        return (1 << 30);
+    return ((1 << 30) / X);
+}
+
 static inline void Blood_SetGotPic(int32_t PicNum)
 {
     if (Blood_WallLock[PicNum] < 200)
@@ -112,43 +119,6 @@ static uint8_t Blood_WallMost(int16_t *MostBuffer, int32_t W, int32_t SectorInde
     return (uint8_t)Result;
 }
 
-static void Blood_GrouScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
-                           char DaStat)
-{
-    int32_t Temp[4];
-    Temp[0] = reg_eax; Temp[1] = reg_edx;
-    Temp[2] = reg_ebx; Temp[3] = reg_ecx;
-
-    reg_eax = DaX1;
-    reg_edx = DaX2;
-    reg_ebx = SectorIndex;
-    reg_ecx = DaStat;
-    Blood_Call(Blood_ProcAddress_GrouScan);
-
-    reg_eax = Temp[0]; reg_edx = Temp[1];
-    reg_ebx = Temp[2]; reg_ecx = Temp[3];
-}
-
-#if 0
-static void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
-                           char DaStat, int32_t BunchIndex)
-{
-    int32_t Temp[4];
-    Temp[0] = reg_eax; Temp[1] = reg_edx;
-    Temp[2] = reg_ebx; Temp[3] = reg_ecx;
-
-    reg_eax = DaX1;
-    reg_edx = DaX2;
-    reg_ebx = SectorIndex;
-    reg_ecx = DaStat;
-    CPU_Push32(BunchIndex);
-    Blood_Call(Blood_ProcAddress_ParaScan);
-
-    reg_eax = Temp[0]; reg_edx = Temp[1];
-    reg_ebx = Temp[2]; reg_ecx = Temp[3];
-}
-#endif
-
 static void Blood_PrepWall(int32_t Z, Blood_Wall_t *Wall)
 {
     int32_t Temp0 = reg_eax;
@@ -181,6 +151,44 @@ static int32_t Blood_AnimateOffs(int16_t TileIndex, int16_t FakeVar)
 static void Blood_FakeTimerHandler(void)
 {
     Blood_Call(Blood_ProcAddress_FakeTimerHandler);
+}
+
+static int32_t Blood_GetCeilZOfSlope(int16_t SectorIndex,
+                                     int32_t DaX, int32_t DaY)
+{
+    int32_t Temp[3];
+    Temp[0] = reg_eax; Temp[1] = reg_edx; Temp[2] = reg_ebx;
+
+    reg_eax = SectorIndex;
+    reg_edx = DaX;
+    reg_ebx = DaY;
+    Blood_Call(Blood_ProcAddress_GetCeilZOfSlope);
+    int32_t Result = reg_eax;
+
+    reg_eax = Temp[0];
+    reg_edx = Temp[1];
+    reg_ebx = Temp[2];
+
+    return Result;
+}
+
+static int32_t Blood_GetFloorZOfSlope(int16_t SectorIndex,
+                                      int32_t DaX, int32_t DaY)
+{
+    int32_t Temp[3];
+    Temp[0] = reg_eax; Temp[1] = reg_edx; Temp[2] = reg_ebx;
+
+    reg_eax = SectorIndex;
+    reg_edx = DaX;
+    reg_ebx = DaY;
+    Blood_Call(Blood_ProcAddress_GetFloorZOfSlope);
+    int32_t Result = reg_eax;
+
+    reg_eax = Temp[0];
+    reg_edx = Temp[1];
+    reg_ebx = Temp[2];
+
+    return Result;
 }
 
 void Blood_SetAspect(int32_t daxrange, int32_t daaspect)
@@ -1404,15 +1412,15 @@ void Blood_DrawWalls(int32_t BunchIndex)
     }
 }
 
-int32_t Blood_VLine1_LogY;
+static int32_t Blood_VLine1_LogY;
 
 static void Blood_SetupVLineAsm(int32_t NegLogY)
 {
     Blood_VLine1_LogY = NegLogY;
 }
 
-static int32_t Blood_VLineAsm1(int32_t VInc, int32_t PalOffs, int32_t Count,
-                               uint32_t VPlc, int32_t BufPlc, int32_t P)
+static int32_t Blood_VLineAsm1(int32_t VInc, uint32_t PalOffs, int32_t Count,
+                               uint32_t VPlc, int32_t BufPlc, uint32_t P)
 {
     uint8_t *Mem = (uint8_t *)MemBase;
 
@@ -1492,11 +1500,11 @@ void Blood_WallScan(int32_t X1, int32_t X2, int16_t *UWall, int16_t *DWall,
         else
             Blood_BufPlce[0] <<= TileSizeY;
 
-        Blood_Vince[0] = SWall[X] * Blood_GlobalYScale;
-        Blood_VPlce[0] = Blood_GlobalZD + Blood_Vince[0] * (Y1VE - Blood_GlobalHoriz + 1);
+        Blood_VIncE[0] = SWall[X] * Blood_GlobalYScale;
+        Blood_VPlcE[0] = Blood_GlobalZD + Blood_VIncE[0] * (Y1VE - Blood_GlobalHoriz + 1);
 
-        Blood_VLineAsm1(Blood_Vince[0], Blood_PalLookupOffset[0],
-                        Y2VE - Y1VE - 1, Blood_VPlce[0],
+        Blood_VLineAsm1(Blood_VIncE[0], Blood_PalLookupOffset[0],
+                        Y2VE - Y1VE - 1, Blood_VPlcE[0],
                         Blood_BufPlce[0] + Blood_WallOff[Blood_GlobalPicNum],
                         X + Blood_FrameOffset + Blood_YLookup[Y1VE]);
     }
@@ -1542,8 +1550,6 @@ static void Blood_HLineAsm4(int32_t Count, uint32_t PalOffs,
              (BY >> (32 - Blood_HLine4_LogY));
 
         uint8_t Byte = PalPtr[BufPtr[BufIndex]];
-
-        /* *((uint8_t *)P) = byte; */
         mem_writeb(P, Byte);
 
         BX -= Blood_HLine4_BXInc;
@@ -1838,9 +1844,9 @@ void Blood_CeilScan(int32_t X1, int32_t X2, int32_t SectorIndex)
         else I =
             1048576 / I;
 
-        Blood_GlobalX1 = Blood_MulScale16(Blood_DMulScale10(
+        Blood_GlobalX1 = Blood_MulScale10(Blood_DMulScale10(
             OX, Blood_SinGlobalAng, -OY, Blood_CosGlobalAng), I);
-        Blood_GlobalY1 = Blood_MulScale16(Blood_DMulScale10(
+        Blood_GlobalY1 = Blood_MulScale10(Blood_DMulScale10(
             OX, Blood_CosGlobalAng, OY, Blood_SinGlobalAng), I);
         Blood_GlobalX2 = -Blood_GlobalX1;
         Blood_GlobalY2 = -Blood_GlobalY1;
@@ -2028,7 +2034,7 @@ void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
         Blood_GlobalPicNum = 0;
 
     if (Blood_PicAnm[Blood_GlobalPicNum] & 192)
-        Blood_GlobalPicNum += Blood_AnimateOffs(Blood_GlobalPicNum, SectorIndex);
+        Blood_GlobalPicNum += Blood_AnimateOffs(Blood_GlobalPicNum, (int16_t)SectorIndex); //
 
     Blood_GlobalShiftVal = (Blood_PicSize[Blood_GlobalPicNum] >> 4);
 
@@ -2039,7 +2045,7 @@ void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
     }
 
     Blood_GlobalShiftVal = 32 - Blood_GlobalShiftVal;
-    Blood_GlobalZD = (((Blood_TileSizeY[Blood_GlobalPicNum] >> 1) + 
+    Blood_GlobalZD = (( (Blood_TileSizeY[Blood_GlobalPicNum] >> 1) + 
                         Blood_ParallaxYOffset) << Blood_GlobalShiftVal) +
                      (Blood_GlobalYPanning << 24);
 
@@ -2071,7 +2077,7 @@ void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
 
                 for(J = Blood_XB1[Z]; J <= Blood_XB2[Z]; J++)
                 {
-                    Blood_LPlc[J] = (((Blood_MulScale32(J - Blood_HalfXDimen, N) +
+                    Blood_LPlc[J] = (((Blood_MulScale23(J - Blood_HalfXDimen, N) +
                                     Blood_GlobalAng) & 2047) >> K);
                 }
             }
@@ -2168,4 +2174,326 @@ void Blood_ParaScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
     }
 
     Blood_GlobalHoriz = GlobalHorizBak;
+}
+
+#define Blood_GrouScan_BitsOfPrecision 3
+
+static int32_t Blood_VLine_LogX;
+static int32_t Blood_VLine_LogY;
+static int32_t Blood_VLine_BufPlc;
+static int32_t Blood_VLine_PInc;
+
+static void Blood_SetupSlopeVLine(int32_t LogYLogX, int32_t BufPlc,
+                                  int32_t PInc)
+{
+    Blood_VLine_LogX = (LogYLogX & 255);
+    Blood_VLine_LogY = (LogYLogX >> 8);
+    Blood_VLine_BufPlc = BufPlc;
+    Blood_VLine_PInc = PInc;
+}
+
+void Blood_SlopeVLine(int32_t P, int32_t I, int32_t *SlopePalPtr,
+                      int32_t Count, int32_t BX, int32_t BY)
+{
+    int32_t BZ = Blood_Asm3;
+    int32_t BZInc = (Blood_Asm1 >> 3);
+
+    uint8_t *BufPtr = (uint8_t *)&MemBase[Blood_VLine_BufPlc];
+
+    for (; Count > 0; Count--)
+    {
+        I = Blood_KRecip(BZ >> 6);
+        BZ += BZInc;
+
+        uint32_t U = BX + Blood_GlobalX3 * I;
+        uint32_t V = BY + Blood_GlobalY3 * I;
+        uint32_t BufIndex = ((U >> (32 - Blood_VLine_LogX)) << Blood_VLine_LogY) +
+                             (V >> (32 - Blood_VLine_LogY));
+
+        uint8_t Byte = *((uint8_t *)&MemBase[ SlopePalPtr[0] + BufPtr[BufIndex]]);
+        mem_writeb(P, Byte);
+
+        SlopePalPtr--;
+        P += Blood_VLine_PInc;
+    }
+}
+
+void Blood_GrouScan(int32_t DaX1, int32_t DaX2, int32_t SectorIndex,
+                    uint8_t DaStat)
+{
+    Blood_Sector_t *Sector = &Blood_Sectors[SectorIndex];
+
+    int32_t DaSlope, DaZ;
+
+    if (DaStat == 0)
+    {
+        /* Back-face culling */
+        int32_t CeilZOfSlope = Blood_GetCeilZOfSlope(SectorIndex,
+                                                     Blood_GlobalPosX,
+                                                     Blood_GlobalPosY);
+        if (Blood_GlobalPosZ <= CeilZOfSlope)
+            return;
+
+        Blood_GlobalOrientation = Sector->CeilingStat;
+        Blood_GlobalPicNum = Sector->CeilingPicNum;
+        Blood_GlobalShade = Sector->CeilingShade;
+        Blood_GlobalPal = Sector->CeilingPal;
+
+        DaSlope = Sector->CeilingHeiNum;
+        DaZ = Sector->CeilingZ;
+    }
+    else
+    {
+        /* Back-face culling */
+        int32_t FloorZOfSlope = Blood_GetFloorZOfSlope(SectorIndex,
+                                                       Blood_GlobalPosX,
+                                                       Blood_GlobalPosY);
+        if (Blood_GlobalPosZ >= FloorZOfSlope)
+            return;
+
+        Blood_GlobalOrientation = Sector->FloorStat;
+        Blood_GlobalPicNum = Sector->FloorPicNum;
+        Blood_GlobalShade = Sector->FloorShade;
+        Blood_GlobalPal = Sector->FloorPal;
+
+        DaSlope = Sector->FloorHeiNum;
+        DaZ = Sector->FloorZ;
+    }
+
+    if ((Blood_PicAnm[Blood_GlobalPicNum] & 192) != 0)
+        Blood_GlobalPicNum += Blood_AnimateOffs(Blood_GlobalPicNum, SectorIndex);
+
+    Blood_SetGotPic(Blood_GlobalPicNum);
+
+    if ((Blood_TileSizeX[Blood_GlobalPicNum] <= 0) ||
+        (Blood_TileSizeY[Blood_GlobalPicNum] <= 0))
+    {
+        return;
+    }
+
+    if (Blood_WallOff[Blood_GlobalPicNum] == 0)
+        Blood_LoadTile(Blood_GlobalPicNum);
+
+    Blood_Wall_t *Wall = &Blood_Walls[Sector->WallPtr];
+
+    int32_t WX = Blood_Walls[Wall->Point2].X - Wall->X;
+    int32_t WY = Blood_Walls[Wall->Point2].Y - Wall->Y;
+
+    int32_t DaSqr = Blood_KRecip(Blood_MSqrtAsm(WX * WX + WY * WY));
+    int32_t I = Blood_MulScale21(DaSlope, DaSqr);
+
+    WX *= I;
+    WY *= I;
+
+    Blood_GlobalX = -Blood_MulScale19(Blood_SinGlobalAng, Blood_XDimenRecip);
+    Blood_GlobalY = Blood_MulScale19(Blood_CosGlobalAng, Blood_XDimenRecip);
+    Blood_GlobalX1 = (Blood_GlobalPosX << 8);
+    Blood_GlobalY1 = -(Blood_GlobalPosY << 8);
+
+    I = (DaX1 - Blood_HalfXDimen) * Blood_XDimenRecip;
+
+    Blood_GlobalX2 = Blood_MulScale16(Blood_CosGlobalAng << 4,
+        Blood_ViewingRangeRecip) - Blood_MulScale27(Blood_SinGlobalAng, I);
+    Blood_GlobalY2 = Blood_MulScale16(Blood_SinGlobalAng << 4,
+        Blood_ViewingRangeRecip) + Blood_MulScale27(Blood_CosGlobalAng, I);
+    Blood_GlobalZD = (Blood_XDimScale << 9);
+    Blood_GlobalZX = -Blood_DMulScale17(WX, Blood_GlobalY2, -WY, Blood_GlobalX2) +
+        Blood_MulScale10(1 - Blood_GlobalHoriz, Blood_GlobalZD);
+    Blood_GlobalZ = -Blood_DMulScale25(WX, Blood_GlobalY, -WY, Blood_GlobalX);
+
+    /* Relative alignment */
+    if (Blood_GlobalOrientation & 64)
+    {
+        int32_t DX = Blood_MulScale14(Blood_Walls[Wall->Point2].X - Wall->X, DaSqr);
+        int32_t DY = Blood_MulScale14(Blood_Walls[Wall->Point2].Y - Wall->Y, DaSqr);
+
+        I = Blood_MSqrtAsm(DaSlope * DaSlope + 16777216);
+
+        int32_t X, Y;
+
+        X = Blood_GlobalX;
+        Y = Blood_GlobalY;
+        Blood_GlobalX = Blood_DMulScale16(X, DX, Y, DY);
+        Blood_GlobalY = Blood_MulScale12(Blood_DMulScale16(-Y, DX, X, DY), I);
+
+        X = ((Wall->X - Blood_GlobalPosX) << 8);
+        Y = ((Wall->Y - Blood_GlobalPosY) << 8);
+        Blood_GlobalX1 = Blood_DMulScale16(-X, DX, -Y, DY);
+        Blood_GlobalY1 = Blood_MulScale12(Blood_DMulScale16(-Y, DX, X, DY), I);
+
+        X = Blood_GlobalX2;
+        Y = Blood_GlobalY2;
+        Blood_GlobalX2 = Blood_DMulScale16(X, DX, Y, DY);
+        Blood_GlobalY2 = Blood_MulScale12(Blood_DMulScale16(-Y, DX, X, DY), I);
+    }
+
+    if (Blood_GlobalOrientation & 0x4)
+    {
+        I = Blood_GlobalX;
+        Blood_GlobalX = -Blood_GlobalY;
+        Blood_GlobalY = -I;
+
+        I = Blood_GlobalX1;
+        Blood_GlobalX1 = Blood_GlobalY1;
+        Blood_GlobalY1 = I;
+
+        I = Blood_GlobalX2;
+        Blood_GlobalX2 = -Blood_GlobalY2;
+        Blood_GlobalY2 = -I;
+    }
+
+    if (Blood_GlobalOrientation & 0x10)
+    {
+        Blood_GlobalX1 = -Blood_GlobalX1;
+        Blood_GlobalX2 = -Blood_GlobalX2;
+        Blood_GlobalX = -Blood_GlobalX;
+    }
+
+    if (Blood_GlobalOrientation & 0x20)
+    {
+        Blood_GlobalY1 = -Blood_GlobalY1;
+        Blood_GlobalY2 = -Blood_GlobalY2;
+        Blood_GlobalY = -Blood_GlobalY;
+    }
+
+    DaZ = Blood_DMulScale9(WX, Blood_GlobalPosY - Wall->Y, -WY,
+        Blood_GlobalPosX - Wall->X) + ((DaZ - Blood_GlobalPosZ) << 8);
+
+    Blood_GlobalX2 = Blood_MulScale20(Blood_GlobalX2, DaZ);
+    Blood_GlobalX = Blood_MulScale28(Blood_GlobalX, DaZ);
+    Blood_GlobalY2 = Blood_MulScale20(Blood_GlobalY2, -DaZ);
+    Blood_GlobalY = Blood_MulScale28(Blood_GlobalY, -DaZ);
+
+    I = 8 - (Blood_PicSize[Blood_GlobalPicNum] & 15);
+    int32_t J = 8 - (Blood_PicSize[Blood_GlobalPicNum] >> 4);
+
+    if (Blood_GlobalOrientation & 8)
+    {
+        I++;
+        J++;
+    }
+
+    Blood_GlobalX1 <<= (I + 12);
+    Blood_GlobalX2 <<= I;
+    Blood_GlobalX <<= I;
+
+    Blood_GlobalY1 <<= (J + 12);
+    Blood_GlobalY2 <<= J;
+    Blood_GlobalY <<= J;
+
+    if (DaStat == 0)
+    {
+        Blood_GlobalX1 += (((int32_t)Sector->CeilingXPanning) << 24);
+        Blood_GlobalY1 += (((int32_t)Sector->CeilingYPanning) << 24);
+    }
+    else
+    {
+        Blood_GlobalX1 += (((int32_t)Sector->FloorXPanning) << 24);
+        Blood_GlobalY1 += (((int32_t)Sector->FloorYPanning) << 24);
+    }
+
+    Blood_Asm1 = -(Blood_GlobalZD >> (16 - Blood_GrouScan_BitsOfPrecision));
+
+    Blood_GlobVis = Blood_GlobalVisibility;
+
+    if (Sector->Visibility != 0)
+    {
+        Blood_GlobVis = Blood_MulScale4(Blood_GlobVis,
+            (int32_t)((uint8_t)(Sector->Visibility + 16)));
+    }
+
+    Blood_GlobVis = Blood_MulScale13(Blood_GlobVis, DaZ);
+    Blood_GlobVis = Blood_MulScale16(Blood_GlobVis, Blood_XDimScale);
+
+    /* J = FP_OFF(palookup[globalpal]); */
+    J = Blood_PalLookup[Blood_GlobalPal];
+
+    Blood_SetupSlopeVLine(((int32_t)(Blood_PicSize[Blood_GlobalPicNum] & 15)) +
+                          (((int32_t)(Blood_PicSize[Blood_GlobalPicNum] >> 4)) << 8),
+         Blood_WallOff[Blood_GlobalPicNum],
+        -Blood_YLookup[1]);
+
+    int32_t L = (Blood_GlobalZD >> 16);
+    int32_t ShInc = Blood_MulScale16(Blood_GlobalZ, Blood_XDimenScale);
+    int32_t ShOffs;
+
+    if (ShInc > 0)
+        ShOffs = (4 << 15);
+    else
+        ShOffs = ((2044 - Blood_YDimen) << 15);
+
+    int32_t Y1;
+
+    if (DaStat == 0)
+        Y1 = Blood_UMost[DaX1];
+    else
+        Y1 = Blood_Max(Blood_UMost[DaX1], Blood_DPlc[DaX1]);
+
+    int32_t M1 = Blood_MulScale16(Y1, Blood_GlobalZD) + (Blood_GlobalZX >> 6);
+
+    /* Avoid visibility overflow by crossing horizon */
+    if (Blood_GlobalZD > 0)
+        M1 += (Blood_GlobalZD >> 16);
+    else
+        M1 -= (Blood_GlobalZD >> 16);
+
+    int32_t M2 = M1 + L;
+
+    int32_t *MPtr1 = &Blood_SlopePalLookup[Y1 + (ShOffs >> 15)];
+    int32_t *MPtr2 = MPtr1 + 1;
+
+    for (int32_t X = DaX1; X <= DaX2; X++)
+    {
+        int32_t Y2;
+
+        if (DaStat == 0)
+        {
+            Y1 = Blood_UMost[X];
+            Y2 = Blood_Min(Blood_DMost[X], Blood_UPlc[X]) - 1;
+        }
+        else
+        {
+            Y1 = Blood_Max(Blood_UMost[X], Blood_DPlc[X]);
+            Y2 = Blood_DMost[X] - 1;
+        }
+
+        if (Y1 <= Y2)
+        {
+            int32_t *NPtr1 = &Blood_SlopePalLookup[Y1 + (ShOffs >> 15)];
+            int32_t *NPtr2 = &Blood_SlopePalLookup[Y2 + (ShOffs >> 15)];
+
+            while (NPtr1 <= MPtr1)
+            {
+                *MPtr1-- = J + (Blood_GetPalLookup(
+                    (int32_t)Blood_MulScale24(Blood_KRecip(M1), Blood_GlobVis),
+                                              Blood_GlobalShade) << 8);
+                M1 -= L;
+            }
+
+            while (NPtr2 >= MPtr2)
+            {
+                *MPtr2++ = J + (Blood_GetPalLookup(
+                    (int32_t)Blood_MulScale24(Blood_KRecip(M2), Blood_GlobVis),
+                                              Blood_GlobalShade) << 8);
+                M2 += L;
+            }
+
+            Blood_GlobalX3 = (Blood_GlobalX2 >> 10);
+            Blood_GlobalY3 = (Blood_GlobalY2 >> 10);
+
+            Blood_Asm3 = Blood_MulScale16(Y2, Blood_GlobalZD) + (Blood_GlobalZX >> 6);
+            Blood_SlopeVLine(Blood_YLookup[Y2] + X + Blood_FrameOffset,
+                             Blood_KRecip(Blood_Asm3 >> 3), NPtr2, Y2 - Y1 + 1,
+                             Blood_GlobalX1, Blood_GlobalY1);
+
+            if ((X & 15) == 0)
+                Blood_FakeTimerHandler();
+        }
+
+        Blood_GlobalX2 += Blood_GlobalX;
+        Blood_GlobalY2 += Blood_GlobalY;
+        Blood_GlobalZX += Blood_GlobalZ;
+
+        ShOffs += ShInc;
+    }
 }

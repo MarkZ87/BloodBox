@@ -64,6 +64,8 @@ enum
     Blood_ProcAddress_SetHLineSizes       = IDA2LinearCSeg01(0xf07e0),
     Blood_ProcAddress_HLine               = IDA2LinearCSeg01(0x8e7d0),
     Blood_ProcAddress_HLineAsm4           = IDA2LinearCSeg01(0xf0950),
+    Blood_ProcAddress_GetCeilZOfSlope     = IDA2LinearCSeg01(0xa1b4e),
+    Blood_ProcAddress_GetFloorZOfSlope    = IDA2LinearCSeg01(0xa1c2c),
 };
 
 enum
@@ -84,6 +86,8 @@ enum
     BloodInt_WallScan,
     BloodInt_FlorScan,
     BloodInt_CeilScan,
+    BloodInt_ParaScan,
+    BloodInt_GrouScan,
 
     /* blood_db.hpp */
     BloodInt_DB_InsertSpriteSect,
@@ -92,6 +96,7 @@ enum
     BloodInt_DB_DeleteSpriteStat,
     BloodInt_DB_InitSprites,
     BloodInt_DB_SpawnSprite,
+    BloodInt_DB_DespawnSprite,
 };
 
 int32_t BloodBox_Startup(void);

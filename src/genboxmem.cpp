@@ -172,8 +172,8 @@ int main(void)
     AddLabel("Blood_TileSizeX", DSeg04(0x340748));
     AddLabel("Blood_PalLookup", DSeg04(0x3506c8));
     AddLabel("Blood_BufPlce", DSeg04(0x2c8e68));
-    AddLabel("Blood_Vince", DSeg04(0x2c8e48));
-    AddLabel("Blood_VPlce", DSeg04(0x2c8e58));
+    AddLabel("Blood_VIncE", DSeg04(0x2c8e48));
+    AddLabel("Blood_VPlcE", DSeg04(0x2c8e58));
     AddLabel("Blood_YLookup", DSeg04(0x3dccfc));
     AddLabel("Blood_WallOff", DSeg04(0x34a2c8));
     AddLabel("Blood_PalLookupOffset", DSeg04(0x2c8e38));
@@ -205,7 +205,6 @@ int main(void)
     AddLabel("Blood_HeadSpriteStat", DSeg04(0x3ddfe6));
     AddLabel("Blood_PrevSpriteStat", DSeg04(0x3573c8));
     AddLabel("Blood_NextSpriteStat", DSeg04(0x3482c8));
-
     AddLabel("Blood_ParallaxType", DSeg04(0x3df0b2));
     AddLabel("Blood_ParallaxYOffset", DSeg04(0x3dccd8));
     AddLabel("Blood_ParallaxYScale", DSeg04(0x3dccdc));
@@ -214,11 +213,21 @@ int main(void)
     AddLabel("Blood_LPlc", DSeg04(0x2ca7e8));
     AddLabel("Blood_SWPlc", DSeg04(0x2f1908));
 
+    AddLabel("Blood_Asm3", DSeg04(0x3db7c0));
+    AddLabel("Blood_GlobalX", DSeg04(0x3db584));
+    AddLabel("Blood_GlobalY", DSeg04(0x3db588));
+    AddLabel("Blood_GlobalZ", DSeg04(0x3db57c));
+    AddLabel("Blood_GlobalX3", DSeg04(0x3db794));
+    AddLabel("Blood_GlobalY3", DSeg04(0x3db7a8));
+    AddLabel("Blood_GlobalZX", DSeg04(0x3db7b4));
+    AddLabel("Blood_SlopePalLookup", DSeg04(0x31b488));
+
     /* blood_db.hpp */
     AddLabel("Blood_DB_StatCount", DSeg04(0x1a6ec4));
     AddLabel("Blood_BD_1A2EC4", DSeg04(0x1a2ec4));
     AddLabel("Blood_BD_19EEC4", DSeg04(0x19eec4));
     AddLabel("Blood_BD_19AEC4", DSeg04(0x19aec4));
+    AddLabel("Blood_DB_XSprites", DSeg04(0x172e34));
 
     qsort(Labels, LabelCount, sizeof(Label_t), CompareFunc);
 

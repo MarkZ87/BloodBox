@@ -207,6 +207,14 @@ static void Blood_Init(void)
     Blood_WriteInt(CSeg01Ptr(0x1f50c), BloodInt_DB_InitSprites, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x1f5a4), BloodInt_DB_SpawnSprite, 1, 0, 0);
     Blood_WriteInt(CSeg01Ptr(0x1f65c), BloodInt_DB_DespawnSprite, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1f710), BloodInt_DB_MoveSpriteSect, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1f7e0), BloodInt_DB_MoveSpriteStat, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1f8dc), BloodInt_DB_NewXSprite, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1f990), BloodInt_DB_DelXSprite, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1fa74), BloodInt_DB_NewXWall, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1fb24), BloodInt_DB_DelXWall, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1fbb0), BloodInt_DB_NewXSector, 1, 0, 0);
+    Blood_WriteInt(CSeg01Ptr(0x1fc64), BloodInt_DB_DelXSector, 1, 0, 0);
 }
 
 /* See Normal_Loop() in dosbox.cpp */
@@ -315,6 +323,31 @@ void Blood_DoInterrupt(void)
     case BloodInt_DB_DespawnSprite:
         Blood_DB_DespawnSprite(reg_eax);
         break;
+    case BloodInt_DB_MoveSpriteSect:
+        reg_eax = Blood_DB_MoveSpriteSect(reg_eax, reg_edx);
+        break;
+    case BloodInt_DB_MoveSpriteStat:
+        reg_eax = Blood_DB_MoveSpriteStat(reg_eax, reg_edx);
+        break;
+    case BloodInt_DB_NewXSprite:
+        reg_eax = Blood_DB_NewXSprite(reg_eax);
+        break;
+    case BloodInt_DB_DelXSprite:
+        Blood_DB_DelXSprite(reg_eax);
+        break;
+    case BloodInt_DB_NewXWall:
+        reg_eax = Blood_DB_NewXWall(reg_eax);
+        break;
+    case BloodInt_DB_DelXWall:
+        Blood_DB_DelXWall(reg_eax);
+        break;
+    case BloodInt_DB_NewXSector:
+        reg_eax = Blood_DB_NewXSector(reg_eax);
+        break;
+    case BloodInt_DB_DelXSector:
+        Blood_DB_DelXSector(reg_eax);
+        break;
+
     default:
         LOG_MSG("WARNING: Blood interrupt called with invalid eax value!\n");
         break;
@@ -332,11 +365,24 @@ void Blood_Interrupt(void)
     CPU_Cycles = 0;
 }
 
-void Blood_ExitError(int32_t LineNum, int32_t FileNameString,
-                     int32_t ErrorMsgString)
+void Blood_ExitError(int32_t LineNum, uint32_t FileNameString,
+                     uint32_t ErrorMsgString)
 {
-    reg_ebx = LineNum;
-    reg_edx = FileNameString;
     reg_eax = ErrorMsgString;
+    reg_edx = FileNameString;
+    reg_ebx = LineNum;
     Blood_Call(Blood_ProcAddress_ExitError);
+}
+
+void Blood_SetErrorInfo(int32_t LineNum, uint32_t FileNameString)
+{
+    Blood_ErrorLineNum = LineNum;
+    Blood_ErrorFileName = FileNameString;
+}
+
+/* TODO: Variable number of args */
+void Blood_ExitError1(uint32_t ErrorMsgString)
+{
+    CPU_Push32(ErrorMsgString);
+    Blood_Call(Blood_ProcAddress_ExitError1);
 }

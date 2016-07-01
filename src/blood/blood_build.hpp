@@ -33,8 +33,6 @@
 #define Blood_MaxWallsB 2048
 #define Blood_MaxClipDist 1024
 
-typedef uint32_t Blood_Pointer_t;
-
 /*
  * CeilingStat / FloorStat:
  *   Bit 0: 1 = parallaxing, 0 = not                                 "P"

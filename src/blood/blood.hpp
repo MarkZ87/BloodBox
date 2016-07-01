@@ -11,6 +11,8 @@
 #include "paging.h"
 #include "regs.h"
 
+typedef uint32_t Blood_Pointer_t;
+
 #include "blood_build.hpp"
 #include "blood_db.hpp"
 #include "blood_pragmas.hpp"
@@ -35,6 +37,7 @@ enum
 {
     /* blood.cpp */
     Blood_ProcAddress_ExitError           = IDA2LinearCSeg01(0xab040),
+    Blood_ProcAddress_ExitError1          = IDA2LinearCSeg01(0xa5440),
 
     /* blood_build.cpp */
     Blood_ProcAddress_SetAspect           = IDA2LinearCSeg01(0x9bd17),
@@ -97,7 +100,18 @@ enum
     BloodInt_DB_InitSprites,
     BloodInt_DB_SpawnSprite,
     BloodInt_DB_DespawnSprite,
+    BloodInt_DB_MoveSpriteSect,
+    BloodInt_DB_MoveSpriteStat,
+    BloodInt_DB_NewXSprite,
+    BloodInt_DB_DelXSprite,
+    BloodInt_DB_NewXWall,
+    BloodInt_DB_DelXWall,
+    BloodInt_DB_NewXSector,
+    BloodInt_DB_DelXSector,
 };
+
+extern Blood_Pointer_t Blood_ErrorFileName; /* 0x3df0b8 */
+extern int32_t Blood_ErrorLineNum; /* 0x3df0bc */
 
 int32_t BloodBox_Startup(void);
 
@@ -105,8 +119,9 @@ void Blood_Call(uint32_t Address);
 void Blood_DoInterrupt(void);
 void Blood_Interrupt(void);
 
-void Blood_ExitError(int32_t LineNum, int32_t FileNameString,
-                     int32_t ErrorMsgString);
-
+void Blood_ExitError(int32_t LineNum, uint32_t FileNameString,
+                     uint32_t ErrorMsgString);
+void Blood_SetErrorInfo(int32_t LineNum, uint32_t FileNameString);
+void Blood_ExitError1(uint32_t ErrorMsgString);
 
 #endif /* __BLOOD_HPP__ */

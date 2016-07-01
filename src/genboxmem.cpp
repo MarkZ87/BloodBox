@@ -35,6 +35,10 @@ static int CompareFunc(const void *A, const void *B)
 
 int main(void)
 {
+    /* blood.cpp */
+    AddLabel("Blood_ErrorFileName", DSeg04(0x3df0b8));
+    AddLabel("Blood_ErrorLineNum", DSeg04(0x3df0bc));
+
     /* blood_build.hpp */
     AddLabel("Blood_ViewingRange", DSeg04(0x3ddfd4));
     AddLabel("Blood_ViewingRangeRecip", DSeg04(0x3db804));
@@ -227,7 +231,15 @@ int main(void)
     AddLabel("Blood_BD_1A2EC4", DSeg04(0x1a2ec4));
     AddLabel("Blood_BD_19EEC4", DSeg04(0x19eec4));
     AddLabel("Blood_BD_19AEC4", DSeg04(0x19aec4));
+
+    AddLabel("Blood_DB_XSpritesFreeList", DSeg04(0x199634));
     AddLabel("Blood_DB_XSprites", DSeg04(0x172e34));
+
+    AddLabel("Blood_DB_XWallsFreeList", DSeg04(0x19a634));
+    AddLabel("Blood_DB_XWalls", DSeg04(0x18ee34));
+
+    AddLabel("Blood_DB_XSectorsFreeList", DSeg04(0x19aa34));
+    AddLabel("Blood_DB_XSectors", DSeg04(0x191e34));
 
     qsort(Labels, LabelCount, sizeof(Label_t), CompareFunc);
 

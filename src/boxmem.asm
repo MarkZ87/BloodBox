@@ -61,7 +61,22 @@ Blood_SearchX:
     resb 0x36416
 global Blood_DB_XSprites
 Blood_DB_XSprites:
-    resb 0x28090
+    resb 0x1c000
+global Blood_DB_XWalls
+Blood_DB_XWalls:
+    resb 0x3000
+global Blood_DB_XSectors
+Blood_DB_XSectors:
+    resb 0x7800
+global Blood_DB_XSpritesFreeList
+Blood_DB_XSpritesFreeList:
+    resb 0x1000
+global Blood_DB_XWallsFreeList
+Blood_DB_XWallsFreeList:
+    resb 0x400
+global Blood_DB_XSectorsFreeList
+Blood_DB_XSectorsFreeList:
+    resb 0x490
 global Blood_BD_19AEC4
 Blood_BD_19AEC4:
     resb 0x4000
@@ -569,5 +584,11 @@ Blood_ShowInvisibility:
     resb 0x1
 global Blood_VidOption
 Blood_VidOption:
-    resb 0x172aeec
+    resb 0x4
+global Blood_ErrorFileName
+Blood_ErrorFileName:
+    resb 0x4
+global Blood_ErrorLineNum
+Blood_ErrorLineNum:
+    resb 0x172aee4
 
